@@ -29,3 +29,6 @@ git clone  https://github.com/liuwen2017/gitStudy.git
 
 	删除分支：git branch -d <name>
  
+
+
+git log --graph --pretty=oneline --abbrev-commit  查看分支的合并情况 
