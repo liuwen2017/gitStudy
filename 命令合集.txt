@@ -1,0 +1,14 @@
+git add + 文件  添加文件
+git commit -m "提交文件"  后面引号内的内容是注释内容
+git status 查看状态 
+git diff 查看文件的改变
+pwd  查看目录
+git log  查看修改日志  
+git log --pretty=oneline  让内容显示一行
+git reset --hard HEAD^  让内容回退到上一个版本  
+cat readme.txt  查看文件内容
+git reset --hard + commit ID 既可以回退到之前的内容
+git reflog  查看之前的操作
+git diff HEAD -- 文件名   可以查看工作区和版本库里面最新版本的区别
+git remote add origin https://github.com/liuwen2017/gitStudy.git
+git push -u origin master  提交数据

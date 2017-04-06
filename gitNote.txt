@@ -1,0 +1,377 @@
+GitNote
+
+--------------------
+
+创建版本库
+
+1.介绍
+
+版本库又名仓库 ，英文名repository,可以理解为一个目录，这个目录里面的所有文件都被git管理，每个文件的修改、删除，git都能跟踪，以便任何时刻都可以追踪历史或者在某个时刻还原。
+
+2.创建
+
+选择一个合适的地方，创建一个空目录 ：
+
+执行命令：
+  mkdir demo
+  cd demo
+  pwd
+
+pwd 命令用于显示当前目录。
+如果是windows系统，为了避免错误，应确保目录名(包括父目录)不包含中文。
+
+
+通过git init 命令把这个目录变成git可以管理的仓库：
+
+git init  
+会显示如下的代码
+Initialized empty Git repository in D:/demo/test/.git/
+
+此时会在目录下多了一个.git的目录，这个目录是git用来跟踪管理版本库的。
+
+3.把文件添加到版本库
+
+首先这里再明确一下，所有的版本控制系统，其实只能跟踪文本文件的改动，比如TXT文件，网页，所有的程序代码等等，Git也不例外。版本控制系统可以告诉你每次的改动，比如在第5行加了一个单词“Linux”，在第8行删了一个单词“Windows”。而图片、视频这些二进制文件，虽然也能由版本控制系统管理，但没法跟踪文件的变化，只能把二进制文件每次改动串起来，也就是只知道图片从100KB改成了120KB，但到底改了啥，版本控制系统不知道，也没法知道。
+
+此时可以在test目录下创建一个readme.txt文件，使用git add命令 如：
+git add readme.txt
+
+执行完成后没有任何的显示，说明添加成功
+
+紧接着，使用命令git commit 告诉git，把文件提交到仓库：
+
+git commit -m "wrote a readme file"
+
+输入完成后会出现，以示提交成功
+
+[master (root-commit) 46aa586] wrote a readme file
+ 1 file changed, 3 insertions(+)
+
+
+其中，git commit 命令，-m后面输入的内容是本次提交的说明，可以输入任意的内容，当然最好是有意义的，这样就能够从历史记录里方便的找到改动记录。
+
+
+此时需要注意，git提交文件，add是添加文件，可以通过add不断的添加文件，而commit可以一次提交很多的文件。
+
+如：
+  git add 文件1 文件2 文件3
+
+  git commit -m '文件说明'
+
+
+--------------------------
+
+时光穿梭
+
+此时，如果我们修改了readme.txt文件。
+
+运行git status 命令 
+
+结果如下：
+
+  On branch master
+  Changes not staged for commit:
+  (use "git add <file>..." to update what will be committed)
+  (use "git checkout -- <file>..." to discard changes in working directory)
+
+        modified:   readme.txt
+
+  no changes added to commit (use "git add" and/or "git commit -a")
+
+
+
+上面的结果告诉我们，readme.txt已经被修改过了。git status命令可以让我们时刻掌握仓库当前的状态。
+
+而如果想要看下上次修改的内容，可以使用git diff 命令。可以查看修改内容。
+
+这是我们可以使用git add 方法提交，但是在执行git commit之前，可以使用一下git status 来查看状态
+
+  On branch master
+  Changes to be committed:
+  (use "git reset HEAD <file>..." to unstage)
+
+        modified:   readme.txt
+
+git status 告诉我们，将要被提交的修改包括readme.txt
+
+知道了以上信息，我们就可以放心的提交了
+git commit -m 'readme diff file'
+
+
+此时当文件提交完成后，在来使用git status 则会出现
+
+On branch master
+nothing to commit, working directory clean
+
+
+git告诉我们当前没有需要提交的修改，工作目录很干净。
+
+------------------------
+
+版本回退
+
+在上面的操作中，我们通过commit命令多次对readme文件进行修改，但是我们该如何查看我们每次的修改呢？
+
+可以使用git log命令 查看历史记录
+
+commit baa5b902520ea025096caf9e1cdfab5350846533
+Author: 李白 <liujunhangWX@163.com>
+Date:   Sun Apr 2 12:50:27 2017 +0800
+
+    readme diff file
+
+commit e5f746dc7f483a9088835b5c4047481c0c5cb81c
+Author: 李白 <liujunhangWX@163.com>
+Date:   Sun Apr 2 12:37:45 2017 +0800
+
+    test three file
+
+commit 46aa58624f3a3c75c0cbd8bb82ab92a2f2576ee4
+Author: 李白 <liujunhangWX@163.com>
+Date:   Sun Apr 2 12:31:26 2017 +0800
+
+    wrote a readme file
+
+
+上面出现的三大段内容就是每一次更改的记录
+
+git log命令显示从最近到最远的提交日志，我们可以看到3次提交。如果嫌输出的信息太多，看得眼花缭乱，可以加上--pretty=oneline
+
+命令：
+  git log --pretty=oneline
+
+返回如下：
+  baa5b902520ea025096caf9e1cdfab5350846533 readme diff file
+  e5f746dc7f483a9088835b5c4047481c0c5cb81c test three file
+  46aa58624f3a3c75c0cbd8bb82ab92a2f2576ee4 wrote a readme file
+
+在上面的历史状态查看中，出现的一大串数字是commit id(版本号)，是一个SHA1计算出来的一个非常大的数字，用十六进制表示。
+
+在git中，HEAD表示当前版本，上一个版本事HEAD^，上上一个版本就是HEAD^^,当然往上100个版本写100个^比较容易数不过来，所以写成HEAD~100
+
+此时，知道了每一次版本的记录后，我们该如何
+回退版本呢？
+例如，现在我想回退到上一个版本：
+命令：
+  git reset --hard HEAD^
+
+结果如下：
+  HEAD is now at e5f746d test three file
+
+回退完成后我们可以查看以下readme文件，使用
+cat readme.txt .
+
+ 而此时，我们可以git log再来查看一下版本信息，我们发现之前的最新版已经消失了，但是这个时候我们如果想要再回到之前最新的版本怎么做呢？
+
+ 只要之前的命令窗口没有被关闭，就可以一直向上查找，找到那个最新版的commit id，就可以回退到之前的版本。
+
+ 如下：
+
+  git reset --hard baa5b902520ea025096caf9e1cdfab5350846533
+
+ 结果：
+  HEAD is now at baa5b90 readme diff file
+
+此时再来查看readme文件，
+cat readme.txt 
+
+发现已经回退到之前最新版
+此时需要知道的，版本号其实没有必要写完整，前几位就可以了，git会自动去找，但是也不能写一两位，这样如果存在重复，git就无法确定。
+
+
+此时还有另外的一种情况，例如，当下班前你已将代码回退到了某个版本，但是关闭电脑并且第二天再来的时候，你开始后悔，想要恢复到之前的版本，但是此时已经无法再找到之前的commit id。
+
+可以通过git reflog命令来查看之前的操作
+
+baa5b90 HEAD@{0}: reset: moving to baa5b902520ea025096caf9e1cdfab5350846533
+e5f746d HEAD@{1}: reset: moving to HEAD^
+baa5b90 HEAD@{2}: commit: readme diff file
+e5f746d HEAD@{3}: commit: test three file
+46aa586 HEAD@{4}: commit (initial): wrote a readme file
+
+此时大概就能够找到之前的版本号，就可以继续回退到之前想要的版本。
+
+-------------------------------
+
+工作区和暂存区
+
+Git和其他版本控制系统如SVN的一个不同之处就是有暂存区的概念。
+
+工作区(working Directory)
+
+  工作区可以理解为电脑上的test目录，里面是完成代码的地方。
+
+版本库（Repository）
+  
+  工作区中有一个隐藏目录.git,这个不算工作区，而是git的版本库。
+
+  git的版本库里面存了很多的东西，其中最重要的就是成为state(或者叫index)的暂存区，还有git为我们自动创建的第一个分支master,以及指向master的一个指针叫HEAD。
+
+  Tip：辅助插图可以看image/0.jpg
+
+  前面说过，我们把文件往git版本库里添加的时候，是分两步执行的：
+
+  第一步是用git add把文件添加进去，实际上就是把文件修改添加到暂存区；
+
+  第二步是用git commit提交更改，实际上就是把暂存区的所有的内容提交到当前分支。
+
+  因为我们创建Git版本库时，git自动为我们呢创建了唯一一个master分支，所以，现在，git commit就是往master分支上提交更改。
+
+  你可以理解为，需要提交的文件统统放在暂存区，然后一次性提交暂存区的所有修改。
+
+  我们可以来进行一个测试：
+
+
+  更改readme.txt 
+
+  并且新创建一个hello.txt .
+
+  此时执行命令：git status  
+
+  On branch master
+Changes not staged for commit:
+  (use "git add <file>..." to update what will be committed)
+  (use "git checkout -- <file>..." to discard changes in working directory)
+
+        modified:   readme.txt
+
+Untracked files:
+  (use "git add <file>..." to include in what will be committed)
+
+        hello.txt
+        image/
+
+no changes added to commit (use "git add" and/or "git commit -a")
+
+
+  在上面的结果中，更改的内容为 readme文件，而hello.txt 和 image/ 是新添加的，所以为 Untracked 状态。
+
+  现在可以使用命令添加
+
+   git add hello.txt image/
+
+   此时可以使用git status 
+
+
+   On branch master
+Changes to be committed:
+  (use "git reset HEAD <file>..." to unstage)
+
+        new file:   hello.txt
+        new file:   image/0.jpg
+
+Changes not staged for commit:
+  (use "git add <file>..." to update what will be committed)
+  (use "git checkout -- <file>..." to discard changes in working directory)
+
+        modified:   readme.txt
+
+  此时暂存区状态变成了01.jpg图片所示
+
+  此时把暂存区内容提交到master分支 
+  git commit -m 'test file '
+
+  提交后如果没有对工作区做更改，工作区就是干净的
+  git status 
+
+  此时版本库内容 -- 03.jpg
+
+
+------------------------------
+
+管理修改
+
+
+git之所以比其他的版本控制器更加的优秀，是因为git跟踪并管理的是修改，而非文件。
+
+例如，我们把readme.txt 进行第一次修改，然后 git add readme.txt ,然后再一次对readme.txt文件进行第二次修改，然后进行提交操作 git commit -m 'beizhu',
+发现此时会出现如下的提示：
+
+  $ git commit -m 'aaaa'
+  On branch master
+  Changes not staged for commit:
+          modified:   readme.txt
+
+  no changes added to commit
+
+
+  我们可以通过 git diff HEAD -- readme.txt 命令查看当前提交文件与上一次文件之间的区别
+
+
+  diff --git a/readme.txt b/readme.txt
+  index 922368d..8d0fa62 100644
+  --- a/readme.txt
+  +++ b/readme.txt
+  @@ -1,2 +1,4 @@
+   hello,world,this is test file,this two file
+  -yanyan is good gril
+  \ No newline at end of file
+  +yanyan is good gril
+  +
+  +yanyan is very nice
+  \ No newline at end of file
+
+
+  发现我们进行的第二次的修改已经被侦测到。
+
+  此时，我们可以选择将文件新增并且提交
+
+
+--------------------------------------------------
+
+撤销修改
+
+如果我们将内容修改之后，并且已经git add 添加到暂存区。这个时候如果我们想要撤销修改
+可以使用  git reset HEAD file 将文件在暂存区的修改撤销
+再使用git checkout  -- 文件 将文件在工作区的修改全部撤销
+
+
+------------------------------------
+
+删除文件
+
+在git中，删除是一个修改操作，我们可以新建一个文件，并且提交到暂存区
+创建文件bb.txt ,并且将文件提交到暂存区 
+  git add bb.txt  
+
+
+  一般情况下，你通常直接在文件管理器中把没用的文件删了，或者用rm命令删了：
+
+   rm test.txt
+
+   这个时候，Git知道你删除了文件，因此，工作区和版本库就不一致了，git status命令会立刻告诉你哪些文件被删除了：
+
+
+   On branch master
+   Changes to be committed:
+    (use "git reset HEAD <file>..." to unstage)
+
+          new file:   bb.txt
+
+   Changes not staged for commit:
+    (use "git add/rm <file>..." to update what will be committed)
+    (use "git checkout -- <file>..." to discard changes in working directory)
+
+          deleted:    bb.txt
+
+现在你有两个选择，一是确实要从版本库中删除该文件，那就用命令git rm删掉，并且git commit：
+
+
+  $ git rm test.txt
+  rm 'test.txt'
+  $ git commit -m "remove test.txt"
+  [master d17efd8] remove test.txt
+   1 file changed, 1 deletion(-)
+   delete mode 100644 test.txt
+
+
+  另一种情况是删错了，因为版本库里还有呢，所以可以很轻松地把误删的文件恢复到最新版本：
+
+  $ git checkout -- test.txt
+  git checkout其实是用版本库里的版本替换工作区的版本，无论工作区是修改还是删除，都可以“一键还原”。
+
+
+
+
+
+
