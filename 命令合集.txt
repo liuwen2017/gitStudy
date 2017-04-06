@@ -12,3 +12,6 @@ git reflog  查看之前的操作
 git diff HEAD -- 文件名   可以查看工作区和版本库里面最新版本的区别
 git remote add origin https://github.com/liuwen2017/gitStudy.git
 git push -u origin master  提交数据
+
+git clone  https://github.com/liuwen2017/gitStudy.git
+ 
